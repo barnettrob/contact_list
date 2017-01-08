@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * Implements of hook_install().
+ */
+function contact_list_install() {
+  contact_list_update_7001();
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function contact_list_update_7001() {
+  $ret = '';
+
+  // Role to grant the permissions to
+  $authenticated_role = user_role_load_by_name('authenticated user');
+  $authenticated_rid = $authenticated_role->rid;
+  // Define our 'authenticated user' role permissions
+  $authenticated_permission = array(
+    'view contact list' => TRUE, // Grant permission
+  );
+  // Grant permissions to our 'authenticated user' role
+  user_role_change_permissions($authenticated_rid, $authenticated_permission);
+
+  $ret = t('view contact list permission added for authenticated user');
+
+  return $ret;
+}

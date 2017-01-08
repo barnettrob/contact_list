@@ -1,0 +1,7 @@
+name = Contact List
+description = Accordion style list to show courses/groups and users within each.
+core = 7.x
+package = Babson Custom
+dependencies[] = course_group
+dependencies[] = og
+

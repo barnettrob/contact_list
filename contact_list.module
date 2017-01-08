@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * @file
+ * Access courses and groups for contact list.
+ *
+ * PDO direct call since goes across sites.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function contact_list_menu() {
+  $items = array();
+
+  $items['contact-list/ajax/get_users_course_group'] = array(
+    'page callback' => 'ajax_contact_list_get_users_course_group',
+    'access arguments' => array('view contact list'),
+    'file' => 'contact_list.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function contact_list_permission() {
+  return array(
+    'view contact list' => array(
+      'title' => t('View Contact List'),
+      'description' => t('Allow user to view their own contact list.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function contact_list_block_info() {
+  $blocks = array();
+
+  $blocks['contact-list'] = array(
+    'info' => t('Contact List'),
+    'region' => 'footer',
+    'status' => 1, // enable the block
+    'visibility' => BLOCK_VISIBILITY_NOTLISTED,
+    'pages' => '',
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function contact_list_block_view($delta = '') {
+  $blocks = array();
+  switch ($delta) {
+    case 'contact-list':
+      module_load_include('inc', 'contact_list', 'contact_list');
+      $blocks['subject'] = '';
+      $blocks['content'] = array(
+        '#markup' => contact_list_wrapper(),
+        '#attached' => array(
+          'css' => array(
+            drupal_get_path('module', 'contact_list') . '/css/contact_list.css',
+          ),
+          'js' => array(
+            drupal_get_path('module', 'contact_list') . '/js/contact_list.js',
+          ),
+        ),
+      );
+      break;
+  }
+
+  return $blocks;
+}
